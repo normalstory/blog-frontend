@@ -1,9 +1,10 @@
 2020.12.31 react-blog 01.login_UI_redux
 
 01 작업환경 준비하기 
+
     0. 프로젝트 생성 
         > yarn create react-app blog-frontend
-
+        
     1. 설정파일 만들기 
         root/.prettierrc
             {
@@ -60,6 +61,7 @@
 
 
 02 로그인 및 리덕스 연동 
+
     1. UI 준비하기
       1) 스냅챗 세팅 https://snippet-generator.app/
       2) Auth 템플릿 완성하기 
