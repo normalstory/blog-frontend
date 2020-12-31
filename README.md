@@ -1,70 +1,82 @@
-# Getting Started with Create React App
+2020.12.31 react-blog 01.login_UI_redux
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+01 작업환경 준비하기 
+    0. 프로젝트 생성 
+        > yarn create react-app blog-frontend
 
-## Available Scripts
+    1. 설정파일 만들기 
+        root/.prettierrc
+            {
+                "singleQuote": true,
+                "semi": true,
+                "useTabs": false,
+                "tabWidth": 2,
+                "trailingComma": "all",
+                "printWidth": 80
+            }
 
-In the project directory, you can run:
+        root/jsconfig.json
+            {
+                "compilerOptions": {
+                    "target": "es6"
+                }
+            }
 
-### `yarn start`
+    2. 라우터 적용 
+      1) 라이브러리 설치
+        > yarn add react-router-dom 
+      2) 라우트 관련 컴포넌트 생성
+        src/pages/LoginPage.js 로그인, RegisterPage.js 회원가입, WritePage.js 글쓰기, PostPage.js 글상세|읽기, PostListPage.js 글목록
+      3) 엔트리 파일 index.js에 있는 APP을 BrowserRouter로 감싸기 
+        src/index.js 
+      4) 라우트 경로 지정
+        src/App.js 
+        * <Route component={PostListPage} path={['/@:username', '/']} exact />
+          = <Route component={PostListPage} path="/" exact />
+            <Route component={PostListPage} path="@:username" exact />
+          = 경로/@이름 으로 접근가능 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+    3. 스타일 설정 
+      1) 라이브러리 설치
+        > yarn add styled-components
+      2) 색상 팔레트 파일 생성  
+        src/lib/styles/palette.js (<- https://bit.ly/mypalette)
+      3) 재사용 용, 버튼 컴포넌트 만들기 
+        src/components/commen/Button.js
+            ...
+            const Button = (props) => <StyledButton {...props} />;
+      4) 글로벌 스타일 수정 
+        src/index.css      
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+    4. 리덕스 적용 
+      1) 라이브러리 설치
+        > yarn add redux react-redux redux-actions immer redux-devtools-extension
+       2) 모듈 생성 
+       src/modules/auth.js
+       3) 루트 리듀서
+       src/modules/index.js
+       4) 엔트리 파일 index.js에 스토어 생성, Provider를 통해 리액트에 리덕스 적용 
+       src/index.js       
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+02 로그인 및 리덕스 연동 
+    1. UI 준비하기
+      1) 스냅챗 세팅 https://snippet-generator.app/
+      2) Auth 템플릿 완성하기 
+      3) Auth 폼 완성하기 
 
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    2. 리덕스로 폼 상태관리하기 
+      1) 모듈 작성  
+       - AuthForm.js :
+          import produce from 'immer'
+          changeField=createAction() 
+          initalizeForm=createAction() 
+          initalState
+          dauth=handleActions() 
+      2) useDispatch와 useSelector 함수를 통해 컴포넌트(connect 대신, hooks)와 리덕스 연동 
+       - LoginForm.js, 
+         LoginPage.js : <AuthForm type="login" /> -> <LoginForm />
+       - RegisterForm.js
+         RegisterPage.js : <AuthForm type="register" /> -> <RegisterForm />
+      2) 모듈 수정 
+       - AuthForm.js : type, 컨테이너 props인 form, onChange, onSubmit 적용
