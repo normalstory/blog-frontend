@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 
 const LoginForm = ({ history }) => {
   //+ useState 상황별 에러 메시지
-  const [error, setError] = useState(null); //로그인 실패 체크
+  const [error, setError] = useState(null); //+ useState, 로그인 실패 체크
 
   const dispatch = useDispatch();
   const { form, auth, authError, user } = useSelector(({ auth, user }) => ({

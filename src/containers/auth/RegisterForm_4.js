@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react'; //+ useState
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeField, initializeForm, register } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
 import { check } from '../../modules/user';
+
+//++ 회원 가입 성공후 홈 화면으로 이동1
 import { withRouter } from 'react-router-dom';
 
 const RegisterForm = ({ history }) => {
-  //+상황별 에러 메시지 제공
-  const [error, setError] = useState(null);
-
   //성공 시 홈화면으로 이동2
   const dispatch = useDispatch();
   const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
@@ -34,18 +33,8 @@ const RegisterForm = ({ history }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     const { username, password, passwordConfirm } = form;
-    //+ 에러 메시지 : 하나라도 비어 있다면
-    if ([username, password, passwordConfirm].includes('')) {
-      setError('빈 칸을 모두 입력하세요');
-      return;
-    }
-    //+ 에러 메시지 : 비번이 다른 경우
     if (password !== passwordConfirm) {
-      setError('비밀번호가 일치하지 않습니다.');
-      dispatch(changeField({ form: 'register', key: 'password', value: '' }));
-      dispatch(
-        changeField({ form: 'register', key: 'passwordConfirm', value: '' }),
-      );
+      //오류처리
       return;
     }
     dispatch(register({ username, password }));
@@ -60,20 +49,10 @@ const RegisterForm = ({ history }) => {
   //회원가입 성공-실패 처리
   useEffect(() => {
     if (authError) {
-      //이미 계정이 있을때
-      if (authError.response.status === 409) {
-        setError('이미 존재하는 계정입니다');
-        return;
-      }
-      //기타 이유
-      setError('회원가입 실패');
+      console.log('오류발생');
+      console.log(authError);
       return;
     }
-    // if (authError) {
-    //   console.log('오류발생');
-    //   console.log(authError);
-    //   return;
-    // }
     if (auth) {
       console.log('회원가입 성공');
       console.log(auth);
@@ -96,7 +75,6 @@ const RegisterForm = ({ history }) => {
       form={form}
       onChange={onChange}
       onSubmit={onSubmit}
-      error={error}
     />
   );
 };
