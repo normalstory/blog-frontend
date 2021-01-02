@@ -1,11 +1,12 @@
 import React from 'react';
-// import Button from '../components/common/Button';
-import Header from '../components/common/Header'; //+상단 고정 해더 (로그인 유지)
+//1 import Button from '../components/common/Button';
+//2 import Header from '../components/common/Header'; //+상단 고정(로그인 유지)
+import HeaderContainer from '../containers/common/HeaderContainer';
 
 const PostListPage = () => {
   return (
     <div>
-      <Header />
+      <HeaderContainer />
       <div>안녕하세요</div>
     </div>
   );

@@ -54,15 +54,9 @@ const LoginForm = ({ history }) => {
     }
   }, [auth, authError, dispatch]);
 
-  //++ localStorage를 사용하여 로그인 상태 유지
   useEffect(() => {
     if (user) {
       history.push('/');
-      try {
-        localStorage.setItem('user', JSON.stringify(user));
-      } catch (e) {
-        console.log('localStorage is not working');
-      }
     }
   }, [history, user]);
 
