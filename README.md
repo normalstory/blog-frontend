@@ -1,5 +1,6 @@
 2020.12.31 react-blog 01.login_UI_redux
 
+
 01 작업환경 준비하기 
 
     0. 프로젝트 생성 
@@ -151,3 +152,78 @@
           > src/modules/auth.js : 액션생성함수와 리듀서 구현 
           > src/modules/index.js : rootSaga 생성 
           > src/index.js : redux-saga 적용 
+
+
+03 회원 가입  
+
+      1) 기본기능 구현 
+        > src/containers/auth/RegisterForm.js 
+      2) 사용자의 상태를 담을 user 리덕스 모듈 
+        > src/modules/user.js
+      3) root리듀서에 등록 
+        > src/modules/index.js 
+      4) 회원 가입 성공후 check를 호출-> 현재 사용자의 로그인 상태 확인 
+        > src/containers/auth/RegisterForm.js   
+      5) 회원 가입 성공후 홈 화면으로 이동 : withRouter로 컴포넌트 감싸기 
+        > src/containers/auth/RegisterForm.js   
+
+
+04 로그인   
+
+      1) 기본 기능 구현, 성공 후 홈으로 이동 
+        > src/containers/auth/LoginForm.js   
+      2) 회원인증 에러처리 : 요청이 실패했을때 에러 메시지 제공
+        (1) 에러발생 dom, style 작성, props로 error를 받아왔을때, 이를 반영한 랜더링 구현
+        > src/components/auth/AuthForm.js  
+        (2) 로그인 시, 상황별 에러 메시지 표시 
+        > src/containers/auth/LoginForm.js
+        (2) 회원가입 시, 상황별 에러 메시지 표시 
+        > src/containers/auth/RegisterForm.js   
+          - 이름,패스워드,확인 란이 비어있을때
+          - 패스워드와 확인이 불일치할때 
+          - 이름이 중복될때 
+      *) 해더 컴퍼넌트 만들기 전에(반응형 대응)
+        > src/components/common/Responsive.js 
+      3) 헤더 컴포넌트 생성 -> 로그인 후 새로고침해도 로그인이 유지됨 
+        > src/components/common/Header.js 
+        (1) 상시 페이지 상단에 떠 있도록 fixed , 겹치지 않도록 Spacer 컴포넌트로 헤더 크기만큼의 공간확보
+        (2) PostListPage에서 랜더링 
+        (3) Button 클릭 -> 페이지 이동 : Link 컴포넌트를 직접 사용 (withRouter보다 웹접근성)
+        > src/components/common/Header.js 
+        > src/components/common/Button.js 
+      4) 로그인 상태 정보제공
+        > src/containers/common/HeaderContainer.js
+        > src/containers/common/Header.js
+      5) 로그인 상태 유지하기 
+        > 브라우저에 내장되어 있는 localStorage 활용 
+        > src/containers/auth/LoginForm.js 수정
+              ...
+              useEffect(() => {
+                if (user) {
+                  history.push('/');
+                  try {
+                    localStorage.setItem('user', JSON.stringify(user));
+                  } catch (e) {
+                    console.log('localStorage is not working');
+                  }
+                }
+              }, [history, user]);
+              return(...);
+              ...
+        > src/containers/auth/RegisterForm.js 수정 
+            ..동일하게 적용 
+        > src/index.js 
+            localStorage를 사용하여 로그인 상태 유지
+      6) 로그인 점증 실패 시 초기화
+        > src/modules/user.js
+
+
+05 로그아웃
+    
+        > src/lib/api/auth.js : 로그아웃 함수 추가 
+        > src/modules/user.js : 로그아웃 액션 추가 
+                                -> 액션이 디스패치되면 api 호출 후 로컬스토리지 초기화 
+        > src/containers/common/HeaderContainer.js : 로그아웃 액션생성 함수를 디스패치하는 
+                                                     함수를 만들어서 Header component에 전달 
+        > src/components/common/Header.js : 로그아웃 호출 
+        
