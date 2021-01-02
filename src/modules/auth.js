@@ -34,7 +34,7 @@ export const changeField = createAction(
     value, //실제 바꾸려는 값
   }),
 );
-export const initalizeForm = createAction(INITIALIZE_FORM, (form) => form); //register, login
+export const initializeForm = createAction(INITIALIZE_FORM, (form) => form); //register, login
 
 //+3 saga
 export const register = createAction(REGISTER, ({ username, password }) => ({
@@ -77,6 +77,7 @@ const auth = handleActions(
     [INITIALIZE_FORM]: (state, { payload: form }) => ({
       ...state,
       [form]: initalState[form],
+      authError: null, //폼 전환 시 회원 인증 에러 초기화
     }),
     // 회원가입 성공
     [REGISTER_SUCCESS]: (state, { payload: auth }) => ({
@@ -87,7 +88,7 @@ const auth = handleActions(
     // 회원가입 실패
     [REGISTER_FAILURE]: (state, { payload: error }) => ({
       ...state,
-      authError: null,
+      authError: error,
     }),
     // 로그인 성공
     [LOGIN_SUCCESS]: (state, { payload: auth }) => ({
@@ -98,7 +99,7 @@ const auth = handleActions(
     // 로그인 실패
     [LOGIN_FAILURE]: (state, { payload: error }) => ({
       ...state,
-      authError: null,
+      authError: error,
     }),
   },
   initalState,
