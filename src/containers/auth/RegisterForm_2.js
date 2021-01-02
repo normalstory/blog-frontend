@@ -2,19 +2,13 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeField, initializeForm, register } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
-import { check } from '../../modules/user';
 
-//++ 회원 가입 성공후 홈 화면으로 이동1
-import { withRouter } from 'react-router-dom';
-
-const RegisterForm = ({ history }) => {
-  //성공 시 홈화면으로 이동2
+const RegisterForm = (e) => {
   const dispatch = useDispatch();
-  const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
+  const { form, auth, authError } = useSelector(({ auth }) => ({
     form: auth.register,
     auth: auth.auth,
     authError: auth.authError,
-    user: user.user,
   }));
 
   //인풋변경 이벤트핸들러
@@ -56,18 +50,8 @@ const RegisterForm = ({ history }) => {
     if (auth) {
       console.log('회원가입 성공');
       console.log(auth);
-      dispatch(check());
     }
-  }, [auth, authError, dispatch]);
-
-  //user 값이 잘 설정되어 있는지 확인
-  useEffect(() => {
-    if (user) {
-      console.log('check api 성공');
-      console.log(user);
-      history.push('/'); //성공 시 홈화면으로 이동4
-    }
-  }, [history, user]); //성공 시 홈화면으로 이동3
+  }, [auth, authError]);
 
   return (
     <AuthForm
@@ -79,4 +63,4 @@ const RegisterForm = ({ history }) => {
   );
 };
 
-export default withRouter(RegisterForm); //성공 시 홈화면으로 이동5
+export default RegisterForm;
