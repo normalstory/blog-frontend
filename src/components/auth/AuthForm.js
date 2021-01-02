@@ -60,7 +60,7 @@ const textMap = {
 };
 
 /**
- * 에러를 보여줍니다
+ * + 에러를 보여줍니다
  */
 const ErrorMessage = styled.div`
   color: red;
@@ -69,6 +69,7 @@ const ErrorMessage = styled.div`
   margin-top: 1rem;
 `;
 
+//+error :props로 - error를 받아왔을때, 이를 반영한 랜더링 구현
 const AuthForm = ({ type, form, onChange, onSubmit, error }) => {
   const text = textMap[type];
   return (
