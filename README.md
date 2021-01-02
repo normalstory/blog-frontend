@@ -82,3 +82,72 @@
          RegisterPage.js : <AuthForm type="register" /> -> <RegisterForm />
       2) 모듈 수정 
        - AuthForm.js : type, 컨테이너 props인 form, onChange, onSubmit 적용
+
+    3. API 연동하기 
+      yarn add axios redux-saga
+
+      1) API 클라이언트에 공통된 설정을 쉽게 넣을 수 있도록 별도의 axios 인스턴스를 만든다 
+        > src/lib/api/client.js
+
+            import axios from 'axios';
+            const client = axios.create();
+
+            /** 글로벌 설정 예시 
+            // API 주소를 다른 곳으로 사용함
+            client.defaults.baseURL = 'https://external-api-server.com';
+
+            // 헤더 설정
+            client.defaults.headers.common['Authorization'] = 'Bearer a1b2c3d4';
+
+            // 인터셉터 설정
+            axios.intercepter.response.use(
+              (response) => {
+                //요청 성공시 할 작업 내용 위치
+                return response;
+              },
+              (error) => {
+                //요청 실패시 할 작업 내용 위치
+                return Promise.reject(error);
+              },
+            );
+            */
+
+            export default client;
+
+      2) 프록시 설정 
+        - 백엔드 서버 4000포트, 리액트 개발 서버는 3000포트 
+        - CORS Cross Origin Request 오류
+          -> 원인 : 별도 설정없이 API를 호출하는 경우 발생하는 에러 
+          -> 대안 : 다른 주소에서도 API를 호출할 수 있도록 서버 코드 수정
+                  but 실서버에서는 같은 둘 다 호스트에서 제공할테니..   
+                  - 임시로-> 웹팩 개발 서버에서 지원하는 프록시Proxy 기능 사용
+                    = CRA의 경우, 
+                      > src/package.json 파일에 "proxy":"http://localhost:4000/" 추가 
+                      -> client.get('/api/posts')하면 
+                        웹팩 개발 서버가 
+                        프록시 역할을 해서 http://localhost:4000/api/posts에 대신 요청 후 결과물 반환해줌 
+      3) api 함수 작성 
+        > src/lib/api/auth.js 
+            import client from './client';
+
+            //로그인
+            export const login = ({ username, password }) =>
+              client.post('api/auth/login', { username, password });
+
+            //회원가입
+            export const register = ({ username, password }) =>
+              client.post('api/auth/register', { username, password });
+
+            //로그인 상태확인
+            export const check = () => client.get('api/auth/check');
+            
+      4) api 요청 상태관리 - redux-saga 활용 
+        (1) loading 리덕스 모듈작성  
+          > src/modules/loading.js 
+        (2) 루트 리듀서 작성    
+          > src/modules/index.js 
+        (3) createRequestSaga 함수 설정
+          > lib/createRequestSaga.js : 사사 생성, 리팩토링(반복코드 간소화) 
+          > src/modules/auth.js : 액션생성함수와 리듀서 구현 
+          > src/modules/index.js : rootSaga 생성 
+          > src/index.js : redux-saga 적용 
