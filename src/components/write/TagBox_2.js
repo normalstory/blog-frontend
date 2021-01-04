@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'; // ++리덕스
+import React, { useState, useCallback } from 'react'; // + hooks사용 태그 추가 삭제 구현
 import styled from 'styled-components';
 import palette from '../../lib/styles/palette';
 
@@ -18,7 +18,7 @@ const TagForm = styled.form`
   overflow: hidden;
   display: flex;
   width: 256px;
-  border: 1px solid ${palette.gray[9]};
+  border: 1px solid ${palette.gray[9]}; /*스타일 초기화 */
   input,
   button {
     outline: none;
@@ -59,9 +59,11 @@ const TagListBlock = styled.div`
 `;
 
 //렌더링 최적화(개별 컴포넌트 화)
+//- tag 값이 바뀔때만 리랜더링 하기 위해 React.memo사용  //+hooks
 const TagItem = React.memo(({ tag, onRemove }) => (
   <Tag onClick={() => onRemove(tag)}>#{tag}</Tag>
 ));
+//- tags 값이 바뀔때만 리랜더링 하기 위해 React.memo사용 //+hooks
 const TagList = React.memo(({ tags, onRemove }) => (
   <TagListBlock>
     {tags.map((tag) => (
@@ -70,51 +72,35 @@ const TagList = React.memo(({ tags, onRemove }) => (
   </TagListBlock>
 ));
 
-// + 리덕스
-const TagBox = ({ tags, onChangeTags }) => {
+const TagBox = () => {
+  //+hooks
   const [input, setInput] = useState('');
   const [localTags, setLocalTags] = useState([]);
-
   const insertTag = useCallback(
     (tag) => {
-      if (!tag) return;
-      if (localTags.includes(tag)) return;
-      // + 리덕스
-      const nextTags = [...localTags, tag];
-      // setLocalTags([...localTags, tag]);
-      setLocalTags(nextTags);
-      onChangeTags(nextTags);
+      if (!tag) return; //공백이면 추가하지 않음
+      if (localTags.includes(tag)) return; //이미 존재한다면 추가하지 않음
+      setLocalTags([...localTags, tag]);
     },
-    [localTags, onChangeTags],
+    [localTags],
   );
   const onRemove = useCallback(
     (tag) => {
-      // + 리덕스
-      const nextTags = localTags.filter((t) => t !== tag);
-      // setLocalTags(localTags.filter((t) => t !== tag));
-      setLocalTags(nextTags);
-      onChangeTags(nextTags);
+      setLocalTags(localTags.filter((t) => t !== tag));
     },
-    [localTags, onChangeTags],
+    [localTags],
   );
-
   const onChange = useCallback((e) => {
     setInput(e.target.value);
   }, []);
-
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      insertTag(input.trim());
-      setInput('');
+      insertTag(input.trim()); //앞뒤공백을 없앤 후 등록
+      setInput(''); //input초기화
     },
     [input, insertTag],
   );
-
-  // + 리덕스 , tags 값이 바뀔때
-  useEffect(() => {
-    setLocalTags(tags);
-  }, [tags]);
 
   return (
     <TagBoxBlock>
