@@ -1,7 +1,21 @@
 import { createAction, handleActions } from 'redux-actions';
 
+//+ post api
+import createRequestSaga, {
+  createRequestActionTypes,
+} from '../lib/createRequestSaga';
+import * as postsAPI from '../lib/api/posts';
+import { takeLatest } from 'redux-saga/effects';
+
 const INITIALIZE = 'write/INITIALIZE'; //모든 내용을 초기화
 const CHANGE_FIELD = 'write/CHANGE_FIELD'; //특정 key 값 바꾸기
+
+//+ post api
+const [
+  WRITE_POST,
+  WRITE_POST_SUCCESS,
+  WRITE_POST_FAILURE,
+] = createRequestActionTypes('write/WRITE_POST'); //포스트 작성
 
 export const initialize = createAction(INITIALIZE);
 export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
@@ -9,10 +23,24 @@ export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
   value,
 }));
 
+//+ post api
+export const writePost = createAction(WRITE_POST, ({ title, body, tags }) => ({
+  title,
+  body,
+  tags,
+}));
+//+ post api + saga 생성
+const writePostSaga = createRequestSaga(WRITE_POST, postsAPI.writePost);
+export function* writeSaga() {
+  yield takeLatest(WRITE_POST, writePostSaga);
+}
+
 const initialState = {
   title: '',
   body: '',
   tags: [],
+  post: null,
+  postError: null,
 };
 
 const write = handleActions(
@@ -21,6 +49,24 @@ const write = handleActions(
     [CHANGE_FIELD]: (state, { payload: { key, value } }) => ({
       ...state,
       [key]: value,
+    }),
+
+    //+ post api
+    [WRITE_POST]: (state) => ({
+      ...state,
+      //post와 postError 초기화
+      post: null,
+      postError: null,
+    }),
+    //포스트 작성 성공
+    [WRITE_POST_SUCCESS]: (state, { payload: post }) => ({
+      ...state,
+      post,
+    }),
+    //포스트 작성 실패
+    [WRITE_POST_FAILURE]: (state, { payload: postError }) => ({
+      ...state,
+      postError,
     }),
   },
   initialState,
