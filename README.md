@@ -227,3 +227,74 @@
                                                      함수를 만들어서 Header component에 전달 
         > src/components/common/Header.js : 로그아웃 호출 
         
+
+06 글쓰기
+
+    1 외부 라이브러리 설치 
+        > yarn add quill
+    2 외부 라이브러리(에디터) 적용 컴포넌트 구성 
+        > src/components/write/Editor.js 
+    3 글쓰기 페이지에 에디터 렌더링 
+        > src/pages/writePage.js 
+    4 하단 컴포넌트(태그, 취소, 완료버튼) 
+        1) UI작성 
+            > src/components/write/TagBox.js
+                - 렌더링 최적화 : 하나만 바뀌어도 전체 렌더링되는 현상 방지 
+                    -> TagItem, TagList 컴포넌트 분리 
+                    -> React.memo 적용 
+                - input이 바뀔 때, 태그 목록이 바뀔때만 리렌더링 처리 
+        2) 글쓰기 페이지에 하단 컴포넌트 렌더링 
+            > src/pages/writePage.js 
+    5 태그 추가,제거 기능 구현 
+            > src/components/write/TagBox.js
+                - Hooks(useState, useCallback) 사용 
+    6 포스트 작성 및 취소 컴포턴트 
+        1) UI작성
+            > src/components/write/WriteActionButtons.js
+        2) 글쓰기 페이지에 하단 컴포넌트 렌더링 
+            > src/pages/writePage.js 
+
+    7 리덕스로 글쓰기 '상태' 관리하기 
+        *글쓰기에 관련된 상태들이 모두 리덕스에서 관리 
+        1) write 리덕스 모듈 작성 
+            > src/modules/write.js 
+        2) 루트 리듀서에 포함시키기 
+            > src/modules/index.js 
+        3) 컨테이너 컴포넌트 만들기
+            (1) Editor 컨테이너 컴포넌트 만들기
+                > src/containers/write/EditorContainer.js 
+                (1-1) writePage에서 기존 Editor를 EditorContainer로 교체 
+                    > src/pages/writePage.js
+                (1-2) Editor 컴포넌트 속성에 (각각의 객션) 추가 
+                    > src/components/write/Editor.js 
+            (2) TagBox 컨테이너 컴포넌트 만들기
+                > src/containers/write/TagBoxContainer.js 
+                (2-1) writePage에서 기존 TagBox TagBoxContainer 로 교체 
+                    > src/pages/writePage.js
+                (3-2) TagBox 컴포넌트 속성에 (각각의 객션) 추가 
+                    > src/components/write/TagBox.js 
+
+            (2-1) WriteActionButtons 컨테이너 컴포넌트 만들기
+                > src/containers/write/WriteActionButtonsContainer.js 
+
+    8 글쓰기 API 연동하기 
+        (1) 회원인증 api는 auth.js, 포스트 api는 post.js 
+            > src/lib/posts.js 
+                import client from './client';
+                export const writePost = ({ title, body, tags }) =>
+                    client.post('/api/posts', { title, body, tags });
+        (2) write 리덕스 모듈에서 포스트 api를 호출하는 리덕스 액션과 writeSaga 사가 준비 
+            > src/modules/write.js
+        (3) 리덕스 모듈인 writeSaga를 rootSaga에 등록 
+            > src/modules/index.js
+        (4) WriteActionButtonsContainer.js 컨테이너 생성 
+            > src/containers/write/WriteActionButtonsContainer.js 
+             - 포스트 등록 버튼 -> 현재 리덕스 스토어 안의 값 사용 
+                    => 새 포스트 작성 
+             - 취소 등록 버튼 -> history 객체를 사용 
+                    => withRouter로 컴포넌트를 미리 감싸 준 다음에 컨테이너를 만들어 줌 
+             - 포스트 작성 성공 -> 서버에서 응답한 포스트 정보의 _id와 username 값을 참조
+                    => 포스트를 읽을 수 있는 경로 생성 
+                    => history.push를 사용하여 해당 경로로 이동 
+        (5) writePage에서 기존 WriteActionButtons 컴포넌트를 WriteActionButtonsContainer로 대체
+        
