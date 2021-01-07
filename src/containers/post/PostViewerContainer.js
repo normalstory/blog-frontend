@@ -23,7 +23,7 @@ const PostViewerContainer = ({ match }) => {
     };
   }, [dispatch, postId]);
 
-  return <PostViewer pos={post} loading={loading} error={error} />;
+  return <PostViewer post={post} loading={loading} error={error} />;
 };
 
 //url 파라미터로 받아온 id값을 조회하기 위해 withRouter 사용
