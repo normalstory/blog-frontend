@@ -297,4 +297,23 @@
                     => 포스트를 읽을 수 있는 경로 생성 
                     => history.push를 사용하여 해당 경로로 이동 
         (5) writePage에서 기존 WriteActionButtons 컴포넌트를 WriteActionButtonsContainer로 대체
-        
+
+
+07 포스트 읽기(조회하기) 
+
+    1 UI 준비
+        1) PostViewer 컴포넌트 - UI : 포스트 제목, 작성자 계정명, 작성된 시간, 태그, 제목, 내용 
+          > src/components/post/PostViewer.js 
+        2) 페이지 연동 
+          > src/pages/PostPage.js
+    2 API 연동
+        1) post 라이브러리에 readPost api 추가 
+          > src/lib/api/posts.js 
+        2) post 리덕스 모듈 
+          > src/moudules/post.js 
+        3) PostViewer 컴포넌트를 위한 컨테이너 컴포넌트 
+          > src/containers/PostViewerContainer.js 
+        4) PostPage에서 기존 PostViewer 컴포넌트를 PostViewerContainer로 교체 
+          > src/pages/PostPage.js
+        5) 이제, PostViewer 컴포넌트에 적용된 props를 사용 
+          > src/components/post/PostViewer.js 
