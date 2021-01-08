@@ -3,7 +3,18 @@ import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import palette from '../../lib/styles/palette';
 
-const TagsBlock = styled.div``;
+const TagsBlock = styled.div`
+  margin-top: 0.5rem;
+  .tag {
+    display: inline-block;
+    color: ${palette.cyan[7]};
+    text-decoration: none;
+    margin-right: 0.5rem;
+    &:hover {
+      color: ${palette.cyan[6]};
+    }
+  }
+`;
 
 const Tags = ({ tags }) => {
   return (
