@@ -5,8 +5,6 @@ import Button from '../common/Button';
 import palette from '../../lib/styles/palette';
 import SubInfo from '../common/SubInfo';
 import Tags from '../common/Tags';
-//+ props반영
-import { Link } from 'react-router-dom';
 
 const PostListBlock = styled(Responsive)`
   margin-top: 3rem;
@@ -39,48 +37,30 @@ const PostItemBlock = styled.div`
   }
 `;
 
-//+ props반영
-const PostItem = ({ post }) => {
-  const { publishedDate, user, tags, title, body, _id } = post;
+const PostItem = () => {
   return (
     <PostItemBlock>
-      <h2>
-        <Link to={`/@${user.username}/${_id}`}>{title}</Link>
-      </h2>
-      <SubInfo
-        username={user.username}
-        publishedDate={new Date(publishedDate)}
-      />
-      <Tags tags={tags} />
-      {body /*-> 이 부분은 서버에서 처리해줘야한다 */}
+      <h2>제목</h2>
+      <SubInfo username="username" publishedDate={new Date()} />
+      <Tags tags={['태그1', '태그2', '태그3']} />
+      <p>포스트 내용의 일부분.. </p>
     </PostItemBlock>
   );
 };
-//+ props반영
-const PostList = ({ posts, loading, error, showWriteButton }) => {
-  //+ error 발생 예외처리
-  if (error) {
-    return <PostListBlock>에러가 발생했습니다..</PostListBlock>;
-  }
 
+const PostList = () => {
   return (
     <PostListBlock>
       <WritePostButtonWrapper>
-        {showWriteButton && (
-          <Button cyan to="/write">
-            새글 작성하기
-          </Button>
-        )}
+        <Button cyan to="/write">
+          새글 작성하기
+        </Button>
       </WritePostButtonWrapper>
-
-      {/*로딩중 아니고, 포스트 배열이 존재하는 경우 보여줌 */}
-      {!loading && posts && (
-        <div>
-          {posts.map((post) => (
-            <PostItem post={post} key={post._id} />
-          ))}
-        </div>
-      )}
+      <div>
+        <PostItem />
+        <PostItem />
+        <PostItem />
+      </div>
     </PostListBlock>
   );
 };
