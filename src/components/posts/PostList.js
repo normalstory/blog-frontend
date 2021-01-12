@@ -5,21 +5,22 @@ import Button from '../common/Button';
 import palette from '../../lib/styles/palette';
 import SubInfo from '../common/SubInfo';
 import Tags from '../common/Tags';
-//+ props반영
 import { Link } from 'react-router-dom';
 
 const PostListBlock = styled(Responsive)`
   margin-top: 3rem;
 `;
+
 const WritePostButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 3rem;
 `;
+
 const PostItemBlock = styled.div`
   padding-top: 3rem;
   padding-bottom: 3rem;
-  //맨 위의 글의 패딩-탑은 빼기
+  /* 맨 위 포스트는 padding-top 없음 */
   &:first-child {
     padding-top: 0;
   }
@@ -39,7 +40,6 @@ const PostItemBlock = styled.div`
   }
 `;
 
-//+ props반영
 const PostItem = ({ post }) => {
   const { publishedDate, user, tags, title, body, _id } = post;
   return (
@@ -52,15 +52,15 @@ const PostItem = ({ post }) => {
         publishedDate={new Date(publishedDate)}
       />
       <Tags tags={tags} />
-      {body /*-> 이 부분은 서버에서 처리해줘야한다 */}
+      <p>{body}</p>
     </PostItemBlock>
   );
 };
-//+ props반영
+
 const PostList = ({ posts, loading, error, showWriteButton }) => {
-  //+ error 발생 예외처리
+  // 에러 발생 시
   if (error) {
-    return <PostListBlock>에러가 발생했습니다..</PostListBlock>;
+    return <PostListBlock>에러가 발생했습니다.</PostListBlock>;
   }
 
   return (
@@ -68,12 +68,11 @@ const PostList = ({ posts, loading, error, showWriteButton }) => {
       <WritePostButtonWrapper>
         {showWriteButton && (
           <Button cyan to="/write">
-            새글 작성하기
+            새 글 작성하기
           </Button>
         )}
       </WritePostButtonWrapper>
-
-      {/*로딩중 아니고, 포스트 배열이 존재하는 경우 보여줌 */}
+      {/*  로딩 중 아니고, 포스트 배열이 존재할 때만 보여줌 */}
       {!loading && posts && (
         <div>
           {posts.map((post) => (

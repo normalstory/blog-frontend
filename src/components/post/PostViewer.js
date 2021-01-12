@@ -28,7 +28,8 @@ const PostContent = styled.div`
 `;
 
 //+ PostViewer 컴포넌트에 적용된 props를 사용
-const PostViewer = ({ post, error, loading }) => {
+//++ actionButtons
+const PostViewer = ({ post, error, loading, actionButtons }) => {
   //에러 발생 시
   if (error) {
     if (error.response && error.response.status === 404) {
@@ -54,6 +55,7 @@ const PostViewer = ({ post, error, loading }) => {
         />
         <Tags tags={tags} />
       </PostHead>
+      {actionButtons}
       <PostContent dangerouslySetInnerHTML={{ __html: body }} />
     </PostViewerBlock>
   );

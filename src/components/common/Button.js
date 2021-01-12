@@ -32,6 +32,12 @@ const buttonStyle = css`
         background: ${palette.cyan[4]};
       }
     `}
+  //+ 페이지 네이션 
+  &:disabled {
+    background: ${palette.gray[3]};
+    color: ${palette.gray[5]};
+    cursor: not-allowed;
+  }
 `;
 
 const StyledButton = styled.button`
