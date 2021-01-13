@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import palette from '../../lib/styles/palette';
+//삭제 확인 모달
+import AskRemoveModal from './AskRemoveModal';
 
 const PostActionButtonsBlock = styled.div`
   display: flex;
@@ -28,12 +30,32 @@ const ActionButton = styled.button`
 `;
 
 //수정 클릭 시, props로 전달받은 onEdit를 호출 {onEdit}
-const PostActionButtons = ({ onEdit }) => {
+const PostActionButtons = ({ onEdit, onRemove }) => {
+  //삭제 확인 모달
+  const [modal, setModal] = useState(false);
+  const onRemoveClick = () => {
+    setModal(true);
+  };
+  const onCancel = () => {
+    setModal(false);
+  };
+  const onConfirm = () => {
+    setModal(false);
+    onRemove();
+  };
+
   return (
-    <PostActionButtonsBlock>
-      <ActionButton onClick={onEdit}>수정</ActionButton>
-      <ActionButton>삭제</ActionButton>
-    </PostActionButtonsBlock>
+    <>
+      <PostActionButtonsBlock>
+        <ActionButton onClick={onEdit}>수정</ActionButton>
+        <ActionButton onClick={onRemoveClick}>삭제</ActionButton>
+      </PostActionButtonsBlock>
+      <AskRemoveModal
+        visible={modal}
+        onConfirm={onConfirm}
+        onCancel={onCancel}
+      />
+    </>
   );
 };
 

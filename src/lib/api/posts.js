@@ -21,3 +21,6 @@ export const listPosts = ({ username, page, tag }) => {
 //포스트 업데이트
 export const updatePost = ({ id, title, body, tags }) =>
   client.patch(`/api/posts/${id}`, { title, body, tags });
+
+//포스트 삭제
+export const removePost = (id) => client.delete(`/api/posts/${id}`);
