@@ -13,6 +13,8 @@ import createSagaMiddleware from 'redux-saga';
 import rootReducer, { rootSaga } from './modules';
 //+++ localStorage를 사용하여 로그인 상태 유지
 import { tempSetUser, check } from './modules/user';
+//++++ 브라우저 탭에 이름 입력
+import { HelmetProvider } from 'react-helmet-async';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
@@ -38,7 +40,9 @@ loadUser(); //+++ localStorage를 사용하여 로그인 상태 유지
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <App />
+      <HelmetProvider>
+        <App />
+      </HelmetProvider>
     </BrowserRouter>
   </Provider>,
   document.getElementById('root'),
